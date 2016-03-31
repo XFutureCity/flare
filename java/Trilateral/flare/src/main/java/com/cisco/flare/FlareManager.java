@@ -83,11 +83,17 @@ public class FlareManager {
 
     public interface Delegate {
         void didReceiveData(Flare flare, JSONObject data, Flare sender);
+
         void didReceivePosition(Flare flare, PointF oldPosition, PointF newPosition, Flare sender);
+
         void handleAction(Flare flare, String action, Flare sender);
+
         void enter(Zone zone, Device device);
+
         void exit(Zone zone, Device device);
+
         void near(Thing thing, Device device, double distance);
+
         void far(Thing thing, Device device);
     }
 
@@ -280,26 +286,31 @@ public class FlareManager {
             handler.gotResponse(device);
         });
     }
+
     public Flare flareForMessage(JSONObject message) {
         try {
             String id = message.getString("thing");
             if (id != null) return flareIndex.get(id);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         try {
             String id = message.getString("device");
             if (id != null) return flareIndex.get(id);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         try {
             String id = message.getString("zone");
             if (id != null) return flareIndex.get(id);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         try {
             String id = message.getString("environment");
             if (id != null) return flareIndex.get(id);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         return null;
     }
@@ -308,7 +319,8 @@ public class FlareManager {
         try {
             String sender = message.getString("sender");
             if (sender != null) return flareIndex.get("sender");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         return null;
     }
@@ -391,7 +403,8 @@ public class FlareManager {
             try {
                 JSONObject json = jsonArray.getJSONObject(i);
                 list.add(json);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
         return list;
@@ -403,7 +416,8 @@ public class FlareManager {
 
     public void listEnvironments(Location location, ListHandler handler) {
         String uri = "/environments";
-        if (location != null) uri += "?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude();
+        if (location != null)
+            uri += "?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude();
         sendListRequest(Request.Method.GET, uri, handler);
     }
 
@@ -540,7 +554,10 @@ public class FlareManager {
 
     public void subscribe(Flare flare, boolean all) {
         JSONObject message = flare.idInfo();
-        try { if (all) message.put("all", true); } catch (Exception e) {}
+        try {
+            if (all) message.put("all", true);
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "subscribe: " + message.toString());
         flareSocket.emit("subscribe", message);
     }
@@ -559,25 +576,46 @@ public class FlareManager {
 
     public void getData(Flare flare, String key) {
         JSONObject message = flare.idInfo();
-        try { message.put("key", key); } catch (Exception e) {}
+        try {
+            message.put("key", key);
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "getData: " + message.toString());
         flareSocket.emit("getData", message);
     }
 
     public void setData(Flare flare, String key, Object value, Flare sender) {
         JSONObject message = flare.idInfo();
-        try { message.put("key", key); } catch (Exception e) {}
-        try { message.put("value", value); } catch (Exception e) {}
-        if (sender != null) try { message.put("sender", sender.getId()); } catch (Exception e) {}
+        try {
+            message.put("key", key);
+        } catch (Exception e) {
+        }
+        try {
+            message.put("value", value);
+        } catch (Exception e) {
+        }
+        if (sender != null) try {
+            message.put("sender", sender.getId());
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "setData: " + message.toString());
         flareSocket.emit("setData", message);
     }
 
     public void setData(Flare flare, String key, double value, Flare sender) {
         JSONObject message = flare.idInfo();
-        try { message.put("key", key); } catch (Exception e) {}
-        try { message.put("value", value); } catch (Exception e) {}
-        if (sender != null) try { message.put("sender", sender.getId()); } catch (Exception e) {}
+        try {
+            message.put("key", key);
+        } catch (Exception e) {
+        }
+        try {
+            message.put("value", value);
+        } catch (Exception e) {
+        }
+        if (sender != null) try {
+            message.put("sender", sender.getId());
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "setData: " + message.toString());
         flareSocket.emit("setData", message);
     }
@@ -590,16 +628,28 @@ public class FlareManager {
 
     public void setPosition(Flare flare, PointF point, Flare sender) {
         JSONObject message = flare.idInfo();
-        try { message.put("position", Flare.pointToJSON(point)); } catch (Exception e) {}
-        if (sender != null) try { message.put("sender", sender.getId()); } catch (Exception e) {}
+        try {
+            message.put("position", Flare.pointToJSON(point));
+        } catch (Exception e) {
+        }
+        if (sender != null) try {
+            message.put("sender", sender.getId());
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "setPosition: " + message.toString());
         flareSocket.emit("setPosition", message);
     }
 
     public void performAction(Flare flare, String action, Flare sender) {
         JSONObject message = flare.idInfo();
-        try { message.put("action", action); } catch (Exception e) {}
-        if (sender != null) try { message.put("sender", sender.getId()); } catch (Exception e) {}
+        try {
+            message.put("action", action);
+        } catch (Exception e) {
+        }
+        if (sender != null) try {
+            message.put("sender", sender.getId());
+        } catch (Exception e) {
+        }
         if (debugSocket) Log.d(TAG, "performAction: " + message.toString());
         flareSocket.emit("performAction", message);
     }
@@ -617,12 +667,14 @@ public class FlareManager {
                     Flare sender = senderForMessage(message);
 
                     try {
-                        String key = (String)data.names().get(0);
+                        String key = (String) data.names().get(0);
                         flare.getData().put(key, data.get(key));
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
 
                     this.delegate.didReceiveData(flare, data, sender);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             });
         });
 
@@ -635,11 +687,12 @@ public class FlareManager {
                     PointF newPosition = Flare.getPoint(message.getJSONObject("position"));
                     Flare sender = senderForMessage(message);
 
-                    PointF oldPosition = ((Flare.PositionObject)flare).getPosition();
-                    ((Flare.PositionObject)flare).setPosition(newPosition);
+                    PointF oldPosition = ((Flare.PositionObject) flare).getPosition();
+                    ((Flare.PositionObject) flare).setPosition(newPosition);
 
                     this.delegate.didReceivePosition(flare, oldPosition, newPosition, sender);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             });
         });
 
@@ -652,7 +705,8 @@ public class FlareManager {
                     String action = message.getString("action");
                     Flare sender = senderForMessage(message);
                     this.delegate.handleAction(flare, action, sender);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             });
         });
 
@@ -661,10 +715,11 @@ public class FlareManager {
             activity.runOnUiThread(() -> {
                 if (debugSocket) Log.d(TAG, "enter: " + message.toString());
                 try {
-                    Zone zone = (Zone)flareIndex.get(message.getString("zone"));
-                    Device device = (Device)flareIndex.get(message.getString("device"));
+                    Zone zone = (Zone) flareIndex.get(message.getString("zone"));
+                    Device device = (Device) flareIndex.get(message.getString("device"));
                     this.delegate.enter(zone, device);
-                } catch (Exception e) {} // TODO: print an error if the thing/device aren't cached in memory!
+                } catch (Exception e) {
+                } // TODO: print an error if the thing/device aren't cached in memory!
             });
         });
 
@@ -673,10 +728,11 @@ public class FlareManager {
             activity.runOnUiThread(() -> {
                 if (debugSocket) Log.d(TAG, "exit: " + message.toString());
                 try {
-                    Zone zone = (Zone)flareIndex.get(message.getString("zone"));
-                    Device device = (Device)flareIndex.get(message.getString("device"));
+                    Zone zone = (Zone) flareIndex.get(message.getString("zone"));
+                    Device device = (Device) flareIndex.get(message.getString("device"));
                     this.delegate.exit(zone, device);
-                } catch (Exception e) {} // TODO: print an error if the thing/device aren't cached in memory!
+                } catch (Exception e) {
+                } // TODO: print an error if the thing/device aren't cached in memory!
             });
         });
 
@@ -685,11 +741,12 @@ public class FlareManager {
             activity.runOnUiThread(() -> {
                 if (debugSocket) Log.d(TAG, "near: " + message.toString());
                 try {
-                    Thing thing = (Thing)flareIndex.get(message.getString("thing"));
-                    Device device = (Device)flareIndex.get(message.getString("device"));
+                    Thing thing = (Thing) flareIndex.get(message.getString("thing"));
+                    Device device = (Device) flareIndex.get(message.getString("device"));
                     double distance = message.getDouble("distance");
                     this.delegate.near(thing, device, distance);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             });
         });
 
@@ -698,15 +755,15 @@ public class FlareManager {
             activity.runOnUiThread(() -> {
                 if (debugSocket) Log.d(TAG, "far: " + message.toString());
                 try {
-                    Thing thing = (Thing)flareIndex.get(message.getString("thing"));
-                    Device device = (Device)flareIndex.get(message.getString("device"));
+                    Thing thing = (Thing) flareIndex.get(message.getString("thing"));
+                    Device device = (Device) flareIndex.get(message.getString("device"));
                     this.delegate.far(thing, device);
-                } catch (Exception e) {} // TODO: print an error if the thing/device aren't cached in memory!
+                } catch (Exception e) {
+                } // TODO: print an error if the thing/device aren't cached in memory!
             });
         });
 
     }
-
 
 
 }

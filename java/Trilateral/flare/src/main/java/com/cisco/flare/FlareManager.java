@@ -8,16 +8,10 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+import com.cisco.flare.volley.FlareJsonArrayRequest;
+import com.cisco.flare.volley.FlareJsonObjectRequest;
+import com.cisco.flare.volley.FlareStringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +19,9 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class FlareManager {
     private Socket flareSocket;
@@ -348,7 +345,7 @@ public class FlareManager {
 
     public void sendRequest(int method, String uri, final Handler handler) {
         String url = server + uri;
-        JsonObjectRequest request = new JsonObjectRequest(method, url, (response) -> {
+        FlareJsonObjectRequest request = new FlareJsonObjectRequest(method, url, (response) -> {
             if (debugRest) Log.d(TAG, uri + ": " + response.toString());
             handler.gotResponse(response);
         }, (error) -> {
@@ -360,7 +357,7 @@ public class FlareManager {
 
     public void sendRequest(int method, String uri, JSONObject message, final Handler handler) {
         String url = server + uri;
-        JsonObjectRequest request = new JsonObjectRequest(method, url, message, (response) -> {
+        FlareJsonObjectRequest request = new FlareJsonObjectRequest(method, url, message, (response) -> {
             if (debugRest) Log.d(TAG, uri + ": " + response.toString());
             handler.gotResponse(response);
         }, (error) -> {
@@ -372,7 +369,7 @@ public class FlareManager {
 
     public void sendListRequest(int method, String uri, final ListHandler handler) {
         String url = server + uri;
-        JsonArrayRequest request = new JsonArrayRequest(method, url, (response) -> {
+        FlareJsonArrayRequest request = new FlareJsonArrayRequest(method, url, (response) -> {
             if (debugRest) Log.d(TAG, uri + ": " + response.toString());
             handler.gotResponse(toList(response));
         }, (error) -> {
@@ -384,7 +381,7 @@ public class FlareManager {
 
     public void sendStringRequest(int method, String uri, final StringHandler handler) {
         String url = uri.contains("://") ? uri : server + uri;
-        StringRequest request = new StringRequest(method, url, (response) -> {
+        FlareStringRequest request = new FlareStringRequest(method, url, (response) -> {
             if (debugRest) Log.d(TAG, uri + ": " + response);
             handler.gotResponse(response);
         }, (error) -> {
